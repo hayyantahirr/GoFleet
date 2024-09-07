@@ -33,7 +33,13 @@ const style = StyleSheet.create({
   },
   searchResultText: {
     // paddingVertical: 5,
+    borderColor: "black",
+    borderWidth: 1,
     fontSize: 16,
+  },
+  address : {
+    fontSize: 10,
+    opacity: 0.5
   },
   selectedLocationContainer: {
     marginTop: 5,

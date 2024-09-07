@@ -121,6 +121,7 @@ export default function HomeScreen() {
               placeholder="Search Pickup location"
               onChangeText={findingPickupLocation}
               style={style.input}
+              editable={!pickupLocation} // Disable input if a pickup location is selected
             />
             {/* Display search results if available and no pickup location is selected */}
             {searchResult && !pickupLocation && (
@@ -157,6 +158,7 @@ export default function HomeScreen() {
               placeholder="Search DropOff location"
               onChangeText={findingDropOffLocation}
               style={style.input}
+              editable={!dropOffLocation} // Disable input if a drop-off location is selected
             />
             {/* Display search results if available and no drop-off location is selected */}
             {dropResult && !dropOffLocation && (
