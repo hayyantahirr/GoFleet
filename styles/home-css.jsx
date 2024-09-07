@@ -12,9 +12,10 @@ const style = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-    marginTop: 20,
   },
   input: {
+    marginTop: 40,
+
     height: 40,
     borderWidth: 1,
     padding: 10,

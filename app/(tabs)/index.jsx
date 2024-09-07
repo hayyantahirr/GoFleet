@@ -7,15 +7,17 @@ import style from "../../styles/home-css";
 export default function HomeScreen() {
   // State to store the user's current location
   const [location, setLocation] = useState(null);
-
+  
   // State to store any error message related to location permissions
   const [errorMsg, setErrorMsg] = useState(null);
 
   // State to store search results for the pickup location
   const [searchResult, setSearchResult] = useState(null);
+  const [dropResult, setDropResult] = useState(null); // Drop-off search results
 
   // State to store the selected pickup location
   const [pickupLocation, setPickupLocation] = useState(null);
+  const [dropOffLocation, setDropOffLocation] = useState(null); // Selected drop-off location
 
   // useEffect to request location permissions and watch the user's location
   useEffect(() => {
@@ -61,9 +63,34 @@ export default function HomeScreen() {
       .catch((err) => console.error(err)); // Handle any errors that occur during the fetch
   }
 
+  // Function to find the drop-off location based on user input
+  function findingDropOffLocation(dropLocation) {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: "fsq3gGfP49aMQlZ7kjUY/iVAkWpRdOiW6FJ3IoyTXRS2SP4=", // API key for Foursquare Places API
+      },
+    };
+
+    // Fetch search results from Foursquare API based on the user's input and current location
+    fetch(
+      `https://api.foursquare.com/v3/places/search?query=${dropLocation}&ll=${location.coords.latitude},${location.coords.longitude}&radius=8000`,
+      options
+    )
+      .then((response) => response.json()) // Convert the response to JSON
+      .then((response) => setDropResult(response.results)) // Update drop-off search results state
+      .catch((err) => console.error(err)); // Handle any errors that occur during the fetch
+  }
+
   // Function to remove the selected pickup location
   function removePickup() {
     setPickupLocation(null); // Clear the selected pickup location
+  }
+
+  // Function to remove the selected drop-off location
+  function removeDropOff() {
+    setDropOffLocation(null); // Clear the selected drop-off location
   }
 
   return (
@@ -90,7 +117,6 @@ export default function HomeScreen() {
               onChangeText={findingPickupLocation}
               style={style.input}
             />
-
             {/* Display search results if available and no pickup location is selected */}
             {searchResult && !pickupLocation && (
               <View style={style.searchResultContainer}>
@@ -106,15 +132,50 @@ export default function HomeScreen() {
                 ))}
               </View>
             )}
-
             {/* Display selected pickup location with a remove button */}
             {pickupLocation && (
               <View style={style.selectedLocationContainer}>
                 <Text style={style.selectedLocationText}>
-                  Pickup Location : {pickupLocation.name}
+                  Pickup Location: {pickupLocation.name}
                 </Text>
                 <TouchableOpacity
                   onPress={removePickup}
+                  style={style.removeButton}
+                >
+                  <Text style={style.removeButtonText}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Input field for searching drop-off locations */}
+            <TextInput
+              placeholder="Search DropOff location"
+              onChangeText={findingDropOffLocation}
+              style={style.input}
+            />
+            {/* Display search results if available and no drop-off location is selected */}
+            {dropResult && !dropOffLocation && (
+              <View style={style.searchResultContainer}>
+                {dropResult.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => setDropOffLocation(item)}
+                  >
+                    <Text style={style.searchResultText}>
+                      {item.name}|{item.location.formatted_address}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+            {/* Display selected drop-off location with a remove button */}
+            {dropOffLocation && (
+              <View style={style.selectedLocationContainer}>
+                <Text style={style.selectedLocationText}>
+                  DropOff Location: {dropOffLocation.name}
+                </Text>
+                <TouchableOpacity
+                  onPress={removeDropOff}
                   style={style.removeButton}
                 >
                   <Text style={style.removeButtonText}>Remove</Text>
