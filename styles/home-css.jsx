@@ -11,7 +11,7 @@ const style = StyleSheet.create({
     height: "100%",
   },
   inputContainer: {
-    width: "90%",
+    width: "100%",
     marginTop: 20,
   },
   input: {
@@ -20,35 +20,46 @@ const style = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "80%",
   },
   searchResultContainer: {
     marginTop: 10,
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 10,
+    // padding: 10,
   },
   searchResultText: {
-    paddingVertical: 5,
+    // paddingVertical: 5,
     fontSize: 16,
   },
   selectedLocationContainer: {
-    marginTop: 20,
+    marginTop: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "white",
+    height: 40,
+    // textAlign: "center",
+    width: "80%",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   selectedLocationText: {
     fontSize: 16,
+    // textAlign: "center",
+    marginLeft: "auto",
   },
   removeButton: {
-    marginLeft: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: "red",
-    borderRadius: 5,
+   marginRight:"auto",
+   marginLeft:"auto",
+    
+    
+    
   },
   removeButtonText: {
-    color: "white",
+    color: "red",
     fontWeight: "bold",
   },
 });

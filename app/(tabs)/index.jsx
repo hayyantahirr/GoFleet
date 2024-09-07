@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
     // Fetch search results from Foursquare API based on the user's input and current location
     fetch(
-      `https://api.foursquare.com/v3/places/search?query=${picklocation}&ll=${location.coords.latitude},${location.coords.longitude}&radius=2000`,
+      `https://api.foursquare.com/v3/places/search?query=${picklocation}&ll=${location.coords.latitude},${location.coords.longitude}&radius=8000`,
       options
     )
       .then((response) => response.json()) // Convert the response to JSON
@@ -99,7 +99,9 @@ export default function HomeScreen() {
                     key={index}
                     onPress={() => setPickupLocation(item)}
                   >
-                    <Text style={style.searchResultText}>{item.name}</Text>
+                    <Text style={style.searchResultText}>
+                      {item.name}|{item.location.formatted_address}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -109,13 +111,13 @@ export default function HomeScreen() {
             {pickupLocation && (
               <View style={style.selectedLocationContainer}>
                 <Text style={style.selectedLocationText}>
-                  Pickup Location Selected: {pickupLocation.name}
+                  Pickup Location : {pickupLocation.name}
                 </Text>
                 <TouchableOpacity
                   onPress={removePickup}
                   style={style.removeButton}
                 >
-                  <Text style={style.removeButtonText}>Remove Pickup</Text>
+                  <Text style={style.removeButtonText}>Remove</Text>
                 </TouchableOpacity>
               </View>
             )}
