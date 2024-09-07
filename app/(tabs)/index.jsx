@@ -7,25 +7,30 @@ import style from "../../styles/home-css";
 export default function HomeScreen() {
   // State to store the user's current location
   const [location, setLocation] = useState(null);
-  
+
   // State to store any error message related to location permissions
   const [errorMsg, setErrorMsg] = useState(null);
 
   // State to store search results for the pickup location
   const [searchResult, setSearchResult] = useState(null);
-  const [dropResult, setDropResult] = useState(null); // Drop-off search results
+
+  // State to store search results for the drop-off location
+  const [dropResult, setDropResult] = useState(null);
 
   // State to store the selected pickup location
   const [pickupLocation, setPickupLocation] = useState(null);
-  const [dropOffLocation, setDropOffLocation] = useState(null); // Selected drop-off location
+
+  // State to store the selected drop-off location
+  const [dropOffLocation, setDropOffLocation] = useState(null);
 
   // useEffect to request location permissions and watch the user's location
   useEffect(() => {
     (async () => {
       // Request location permission from the user
       let { status } = await Location.requestForegroundPermissionsAsync();
+
+      // If permission is denied, set an error message and exit the function
       if (status !== "granted") {
-        // If permission is denied, set an error message and exit the function
         setErrorMsg("Permission to access location was denied");
         return;
       }
@@ -38,7 +43,7 @@ export default function HomeScreen() {
 
       // Watch the user's location and update the state with the new location data
       Location.watchPositionAsync(options, (location) => {
-        setLocation(location);
+        setLocation(location); // Update the location state with the new location
       });
     })();
   }, []); // Empty dependency array ensures this runs only once when the component mounts
@@ -59,7 +64,7 @@ export default function HomeScreen() {
       options
     )
       .then((response) => response.json()) // Convert the response to JSON
-      .then((response) => setSearchResult(response.results)) // Update search results state
+      .then((response) => setSearchResult(response.results)) // Update search results state with the fetched data
       .catch((err) => console.error(err)); // Handle any errors that occur during the fetch
   }
 
@@ -79,7 +84,7 @@ export default function HomeScreen() {
       options
     )
       .then((response) => response.json()) // Convert the response to JSON
-      .then((response) => setDropResult(response.results)) // Update drop-off search results state
+      .then((response) => setDropResult(response.results)) // Update drop-off search results state with the fetched data
       .catch((err) => console.error(err)); // Handle any errors that occur during the fetch
   }
 
@@ -109,7 +114,7 @@ export default function HomeScreen() {
           {/* Marker to show the user's current location on the map */}
           <Marker coordinate={location.coords} />
 
-          {/* Container for the input field and search results */}
+          {/* Container for the input fields and search results */}
           <View style={style.inputContainer}>
             {/* Input field for searching pickup locations */}
             <TextInput
@@ -126,7 +131,7 @@ export default function HomeScreen() {
                     onPress={() => setPickupLocation(item)}
                   >
                     <Text style={style.searchResultText}>
-                      {item.name}|{item.location.formatted_address}
+                      {item.name} | {item.location.formatted_address}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -162,7 +167,7 @@ export default function HomeScreen() {
                     onPress={() => setDropOffLocation(item)}
                   >
                     <Text style={style.searchResultText}>
-                      {item.name}|{item.location.formatted_address}
+                      {item.name} | {item.location.formatted_address}
                     </Text>
                   </TouchableOpacity>
                 ))}
