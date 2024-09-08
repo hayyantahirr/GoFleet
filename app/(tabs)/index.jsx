@@ -23,6 +23,12 @@ export default function HomeScreen() {
   // State to store the selected drop-off location
   const [dropOffLocation, setDropOffLocation] = useState(null);
 
+  // State to store the value of the pickup input field
+  const [pickupInput, setPickupInput] = useState("");
+
+  // State to store the value of the drop-off input field
+  const [dropOffInput, setDropOffInput] = useState("");
+
   // useEffect to request location permissions and watch the user's location
   useEffect(() => {
     (async () => {
@@ -50,6 +56,7 @@ export default function HomeScreen() {
 
   // Function to find the pickup location based on user input
   function findingPickupLocation(picklocation) {
+    setPickupInput(picklocation); // Update the input field value
     const options = {
       method: "GET",
       headers: {
@@ -70,6 +77,7 @@ export default function HomeScreen() {
 
   // Function to find the drop-off location based on user input
   function findingDropOffLocation(dropLocation) {
+    setDropOffInput(dropLocation); // Update the input field value
     const options = {
       method: "GET",
       headers: {
@@ -91,11 +99,13 @@ export default function HomeScreen() {
   // Function to remove the selected pickup location
   function removePickup() {
     setPickupLocation(null); // Clear the selected pickup location
+    setPickupInput(""); // Clear the input field value
   }
 
   // Function to remove the selected drop-off location
   function removeDropOff() {
     setDropOffLocation(null); // Clear the selected drop-off location
+    setDropOffInput(""); // Clear the input field value
   }
 
   return (
@@ -120,8 +130,9 @@ export default function HomeScreen() {
             <TextInput
               placeholder="Search Pickup location"
               onChangeText={findingPickupLocation}
+              value={pickupInput}
               style={style.input}
-              editable={!pickupLocation} // Disable input if a pickup location is selected
+              editable={!pickupLocation} // Disable input if pickup location is selected
             />
             {/* Display search results if available and no pickup location is selected */}
             {searchResult && !pickupLocation && (
@@ -129,7 +140,10 @@ export default function HomeScreen() {
                 {searchResult.map((item, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => setPickupLocation(item)}
+                    onPress={() => {
+                      setPickupLocation(item);
+                      setPickupInput(""); // Clear the input field after selecting a location
+                    }}
                   >
                     <Text style={style.searchResultText}>
                       {item.name} | {item.location.formatted_address}
@@ -157,8 +171,9 @@ export default function HomeScreen() {
             <TextInput
               placeholder="Search DropOff location"
               onChangeText={findingDropOffLocation}
+              value={dropOffInput}
               style={style.input}
-              editable={!dropOffLocation} // Disable input if a drop-off location is selected
+              editable={!dropOffLocation} // Disable input if drop-off location is selected
             />
             {/* Display search results if available and no drop-off location is selected */}
             {dropResult && !dropOffLocation && (
@@ -166,7 +181,10 @@ export default function HomeScreen() {
                 {dropResult.map((item, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => setDropOffLocation(item)}
+                    onPress={() => {
+                      setDropOffLocation(item);
+                      setDropOffInput(""); // Clear the input field after selecting a location
+                    }}
                   >
                     <Text style={style.searchResultText}>
                       {item.name} | {item.location.formatted_address}
