@@ -13,7 +13,12 @@ export default function HomeScreen() {
   const [dropOffLocation, setDropOffLocation] = useState(null);
   const [pickupInput, setPickupInput] = useState("");
   const [dropOffInput, setDropOffInput] = useState("");
-
+  const rates = {
+    FleetPremium: 100,
+    FleetMini: 80,
+    Rickshaw: 55,
+    Bike: 30,
+  };
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -78,6 +83,7 @@ export default function HomeScreen() {
     setDropOffLocation(null);
     setDropOffInput("");
   }
+  function vehicles(vehicle) {}
 
   return (
     <View style={style.container}>
@@ -91,8 +97,8 @@ export default function HomeScreen() {
             longitude: pickupLocation
               ? pickupLocation.geocodes.main.longitude
               : location.coords.longitude,
-            latitudeDelta: pickupLocation ? 0.10 : 0.0032,
-            longitudeDelta: pickupLocation ? 0.10 : 0.0001,
+            latitudeDelta: pickupLocation ? 0.1 : 0.0032,
+            longitudeDelta: pickupLocation ? 0.1 : 0.0001,
           }}
         >
           <Marker
@@ -118,28 +124,48 @@ export default function HomeScreen() {
 
       <View style={style.inputContainer}>
         <View style={style.vehicleButtonContainer}>
-          <TouchableOpacity style={style.vehicleButton}>
+          <TouchableOpacity
+            style={style.vehicleButton}
+            onPress={() => {
+              vehicles("Fleet Premium");
+            }}
+          >
             <Image
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/GoFleet Premium.png")}
             />
-            <Text style={style.vehicleButtonText}>GoFleet Premium</Text>
+            <Text style={style.vehicleButtonText}>Fleet Premium</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={style.vehicleButton}>
+          <TouchableOpacity
+            style={style.vehicleButton}
+            onPress={() => {
+              vehicles("Fleet Mini");
+            }}
+          >
             <Image
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Fleet Mini.png")}
             />
             <Text style={style.vehicleButtonText}>Fleet Mini</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={style.vehicleButton}>
+          <TouchableOpacity
+            style={style.vehicleButton}
+            onPress={() => {
+              vehicles("Rickshaw");
+            }}
+          >
             <Image
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Rickshaw.png")}
             />
             <Text style={style.vehicleButtonText}>Rikshaw</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={style.vehicleButton}>
+          <TouchableOpacity
+            style={style.vehicleButton}
+            onPress={() => {
+              vehicles("Bike");
+            }}
+          >
             <Image
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Bike.png")}

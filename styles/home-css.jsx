@@ -18,6 +18,7 @@ const style = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 20,
+    color: "black",
   },
   vehicleImage: {
     width: 50,
@@ -51,6 +52,7 @@ const style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     marginBottom: 10,
+    color: "black",
   },
   searchResultContainer: {
     backgroundColor: "white",
