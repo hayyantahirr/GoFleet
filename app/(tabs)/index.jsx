@@ -184,7 +184,15 @@ export default function HomeScreen() {
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/FleetPremium.png")}
             />
-            <Text style={style.vehicleButtonText}>Fleet Premium</Text>
+            <Text
+              style={[
+                style.vehicleButtonText,
+                selectedVehicle === "FleetPremium" &&
+                  style.vehicleButtonTextSelected,
+              ]}
+            >
+              Fleet Premium
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -202,7 +210,15 @@ export default function HomeScreen() {
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/FleetMini.png")}
             />
-            <Text style={style.vehicleButtonText}>Fleet Mini</Text>
+            <Text
+              style={[
+                style.vehicleButtonText,
+                selectedVehicle === "FleetMini" &&
+                  style.vehicleButtonTextSelected,
+              ]}
+            >
+              Fleet Mini
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -220,7 +236,15 @@ export default function HomeScreen() {
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Rickshaw.png")}
             />
-            <Text style={style.vehicleButtonText}>Rickshaw</Text>
+            <Text
+              style={[
+                style.vehicleButtonText,
+                selectedVehicle === "Rickshaw" &&
+                  style.vehicleButtonTextSelected,
+              ]}
+            >
+              Rickshaw
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -238,7 +262,14 @@ export default function HomeScreen() {
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Bike.png")}
             />
-            <Text style={style.vehicleButtonText}>Bike</Text>
+            <Text
+              style={[
+                style.vehicleButtonText,
+                selectedVehicle === "Bike" && style.vehicleButtonTextSelected,
+              ]}
+            >
+              Bike
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -261,16 +292,22 @@ export default function HomeScreen() {
                 }}
               >
                 <Text style={style.searchResultText}>
-                  {item.name} | {item.location.formatted_address}
+                  {item.name} | {item.location.formatted_address}{" "}
+                  {/* Join the words back into a string */}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
         )}
+
         {pickupLocation && (
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
-              Pickup Location: {pickupLocation.name}
+              Pickup Location:{" "}
+              {pickupLocation.name
+                .split(" ") // Split the address into words
+                .slice(0, 2) // Limit the address to the first 8 words
+                .join(" ")}
             </Text>
             <TouchableOpacity onPress={removePickup} style={style.removeButton}>
               <Text style={style.removeButtonText}>Remove</Text>
@@ -306,7 +343,11 @@ export default function HomeScreen() {
         {dropOffLocation && (
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
-              DropOff Location: {dropOffLocation.name}
+              DropOff Location:{" "}
+              {dropOffLocation.name
+                .split(" ") // Split the address into words
+                .slice(0, 2) // Limit the address to the first 8 words
+                .join(" ")}
             </Text>
             <TouchableOpacity
               onPress={removeDropOff}
@@ -316,7 +357,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
-        <Text>Your Fare is PKR:{fare}</Text>
+        <Text style={style.fareText}>Your Fare is PKR:{fare}</Text>
         <TouchableOpacity style={style.findingRideButton}>
           <Text style={style.findingRideText}>Find Ride</Text>
         </TouchableOpacity>

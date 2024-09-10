@@ -99,12 +99,23 @@ const style = StyleSheet.create({
   findingRideText: {
     textAlign: "center",
     color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
+    fontSize: 28.5,
+    // fontWeight: "bold",
   },
   selectedVehicleButton: {
-    backgroundColor: "blue", // Set the background color to blue for selected vehicle
+    backgroundColor: "#726E60", // Set the background color to blue for selected vehicle
     borderRadius: 15,
+  },
+  vehicleButtonTextSelected: {
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
+  },
+  fareText: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 
