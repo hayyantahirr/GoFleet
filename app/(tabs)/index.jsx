@@ -13,11 +13,13 @@ export default function HomeScreen() {
   const [dropOffLocation, setDropOffLocation] = useState(null);
   const [pickupInput, setPickupInput] = useState("");
   const [dropOffInput, setDropOffInput] = useState("");
+  const [fare, setFare] = useState(0);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const rates = {
-    FleetPremium: 100,
-    FleetMini: 80,
-    Rickshaw: 55,
-    Bike: 30,
+    FleetPremium: 120,
+    FleetMini: 89.23,
+    Rickshaw: 59.9956,
+    Bike: 50,
   };
   useEffect(() => {
     (async () => {
@@ -83,7 +85,50 @@ export default function HomeScreen() {
     setDropOffLocation(null);
     setDropOffInput("");
   }
-  function vehicles(vehicle) {}
+  function vehicles(vehicle) {
+    console.log(rates[vehicle]);
+    setSelectedVehicle(vehicle);
+    const baseFare = rates[vehicle];
+    console.log(
+      "location.coords.latitude ==>>",
+      location.coords.latitude,
+      "location.coords.longitude ==>>",
+      location.coords.longitude,
+      "pickupLocation.location.lat==>>",
+      dropOffLocation.geocodes.main.latitude,
+      "pickupLocation.location.lng==>>",
+      dropOffLocation.geocodes.main.longitude
+    );
+
+    const distance = calcCrow(
+      pickupLocation.geocodes.main.latitude,
+      pickupLocation.geocodes.main.longitude,
+      dropOffLocation.geocodes.main.latitude,
+      dropOffLocation.geocodes.main.longitude
+    );
+    const fareMade = baseFare * distance;
+    setFare(Math.floor(fareMade));
+    console.log(`your ${vehicle} fare is ${fare}`);
+  }
+  function calcCrow(lat1, lon1, lat2, lon2) {
+    var R = 6371; // km
+    var dLat = toRad(lat2 - lat1);
+    var dLon = toRad(lon2 - lon1);
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
+
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
+  }
+
+  // Converts numeric degrees to radians
+  function toRad(Value) {
+    return (Value * Math.PI) / 180;
+  }
 
   return (
     <View style={style.container}>
@@ -127,7 +172,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={style.vehicleButton}
             onPress={() => {
-              vehicles("Fleet Premium");
+              vehicles("FleetPremium");
             }}
           >
             <Image
@@ -139,7 +184,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={style.vehicleButton}
             onPress={() => {
-              vehicles("Fleet Mini");
+              vehicles("FleetMini");
             }}
           >
             <Image
@@ -248,7 +293,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
-
+        <Text>Your Fare is PKR:{fare}</Text>
         <TouchableOpacity style={style.findingRideButton}>
           <Text style={style.findingRideText}>Find Ride</Text>
         </TouchableOpacity>
