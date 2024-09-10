@@ -109,7 +109,7 @@ const style = StyleSheet.create({
     // fontWeight: "bold",
   },
   selectedVehicleButton: {
-    backgroundColor: "#726E60", // Set the background color to blue for selected vehicle
+    backgroundColor: "#726E60", 
     borderRadius: 15,
   },
   vehicleButtonTextSelected: {

@@ -125,7 +125,6 @@ export default function HomeScreen() {
     return d;
   }
 
-  // Converts numeric degrees to radians
   function toRad(Value) {
     return (Value * Math.PI) / 180;
   }
@@ -157,7 +156,6 @@ export default function HomeScreen() {
             }}
           />
 
-          {/* Add a marker for the drop-off location if it is selected */}
           {dropOffLocation && (
             <Marker
               coordinate={{
@@ -297,7 +295,6 @@ export default function HomeScreen() {
               >
                 <Text style={style.searchResultText}>
                   {item.name} | {item.location.formatted_address}{" "}
-                  {/* Join the words back into a string */}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -308,10 +305,7 @@ export default function HomeScreen() {
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
               Pickup Location:{" "}
-              {pickupLocation.name
-                .split(" ") // Split the address into words
-                .slice(0, 2) // Limit the address to the first 8 words
-                .join(" ")}
+              {pickupLocation.name.split(" ").slice(0, 2).join(" ")}
             </Text>
             <TouchableOpacity onPress={removePickup} style={style.removeButton}>
               <Text style={style.removeButtonText}>Remove</Text>
@@ -348,10 +342,7 @@ export default function HomeScreen() {
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
               DropOff Location:{" "}
-              {dropOffLocation.name
-                .split(" ") // Split the address into words
-                .slice(0, 2) // Limit the address to the first 8 words
-                .join(" ")}
+              {dropOffLocation.name.split(" ").slice(0, 2).join(" ")}
             </Text>
             <TouchableOpacity
               onPress={removeDropOff}
