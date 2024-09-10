@@ -22,7 +22,8 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
-    borderRadius: 20,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
     color: "black",
   },
   vehicleImage: {
