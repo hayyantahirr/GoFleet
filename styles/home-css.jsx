@@ -102,6 +102,10 @@ const style = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
+  selectedVehicleButton: {
+    backgroundColor: "blue", // Set the background color to blue for selected vehicle
+    borderRadius: 15,
+  },
 });
 
 export default style;

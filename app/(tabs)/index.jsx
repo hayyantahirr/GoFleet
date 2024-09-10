@@ -170,46 +170,69 @@ export default function HomeScreen() {
       <View style={style.inputContainer}>
         <View style={style.vehicleButtonContainer}>
           <TouchableOpacity
-            style={style.vehicleButton}
+            style={[
+              style.vehicleButton,
+              selectedVehicle === "FleetPremium" && style.selectedVehicleButton, // Apply blue background if selected
+              (!pickupLocation || !dropOffLocation) && style.disabledButton, // Apply disabled style if either location is not selected
+            ]}
             onPress={() => {
               vehicles("FleetPremium");
             }}
+            disabled={!pickupLocation || !dropOffLocation} // Disable button if locations are not selected
           >
             <Image
               style={style.vehicleImage}
-              source={require("../../assets/GoFleet Images/GoFleet Premium.png")}
+              source={require("../../assets/GoFleet Images/FleetPremium.png")}
             />
             <Text style={style.vehicleButtonText}>Fleet Premium</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={style.vehicleButton}
+            style={[
+              style.vehicleButton,
+              selectedVehicle === "FleetMini" && style.selectedVehicleButton, // Apply blue background if selected
+              (!pickupLocation || !dropOffLocation) && style.disabledButton, // Apply disabled style
+            ]}
             onPress={() => {
               vehicles("FleetMini");
             }}
+            disabled={!pickupLocation || !dropOffLocation} // Disable button
           >
             <Image
               style={style.vehicleImage}
-              source={require("../../assets/GoFleet Images/Fleet Mini.png")}
+              source={require("../../assets/GoFleet Images/FleetMini.png")}
             />
             <Text style={style.vehicleButtonText}>Fleet Mini</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={style.vehicleButton}
+            style={[
+              style.vehicleButton,
+              selectedVehicle === "Rickshaw" && style.selectedVehicleButton, // Apply blue background if selected
+              (!pickupLocation || !dropOffLocation) && style.disabledButton, // Apply disabled style
+            ]}
             onPress={() => {
               vehicles("Rickshaw");
             }}
+            disabled={!pickupLocation || !dropOffLocation} // Disable button
           >
             <Image
               style={style.vehicleImage}
               source={require("../../assets/GoFleet Images/Rickshaw.png")}
             />
-            <Text style={style.vehicleButtonText}>Rikshaw</Text>
+            <Text style={style.vehicleButtonText}>Rickshaw</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={style.vehicleButton}
+            style={[
+              style.vehicleButton,
+              selectedVehicle === "Bike" && style.selectedVehicleButton, // Apply blue background if selected
+              (!pickupLocation || !dropOffLocation) && style.disabledButton, // Apply disabled style
+            ]}
             onPress={() => {
               vehicles("Bike");
             }}
+            disabled={!pickupLocation || !dropOffLocation} // Disable button
           >
             <Image
               style={style.vehicleImage}
