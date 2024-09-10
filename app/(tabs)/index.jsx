@@ -91,7 +91,7 @@ export default function HomeScreen() {
     const baseFare = rates[vehicle];
     console.log(
       "location.coords.latitude ==>>",
-      location.coords.latitude,
+      location,
       "location.coords.longitude ==>>",
       location.coords.longitude,
       "pickupLocation.location.lat==>>",
@@ -146,6 +146,10 @@ export default function HomeScreen() {
             longitudeDelta: pickupLocation ? 0.1 : 0.0001,
           }}
         >
+          <Image
+            source={require("../../assets/GoFleet Images/Go_fleet-removebg-preview.png")}
+            style={style.Logo}
+          />
           <Marker
             coordinate={{
               latitude: location.coords.latitude,
