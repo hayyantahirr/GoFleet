@@ -1,10 +1,12 @@
 import { StyleSheet } from "react-native";
 
 const style = StyleSheet.create({
-  Logo: { width: 100, height: 100, 
+  Logo: {
+    width: 100,
+    height: 100,
     opacity: 0.5,
-    marginLeft: 'auto', 
-    marginRight: 'auto',
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   container: {
     flex: 1,
@@ -109,7 +111,7 @@ const style = StyleSheet.create({
     // fontWeight: "bold",
   },
   selectedVehicleButton: {
-    backgroundColor: "#726E60", 
+    backgroundColor: "#726E60",
     borderRadius: 15,
   },
   vehicleButtonTextSelected: {

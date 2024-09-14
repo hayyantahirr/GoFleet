@@ -4,7 +4,7 @@ import MapView, { Marker } from "react-native-maps"; // Map component and Marker
 import * as Location from "expo-location"; // Location services from Expo
 import { useEffect, useState } from "react"; // React hooks for managing state and side effects
 import style from "../../styles/home-css"; // Importing custom styles for this screen
-
+import { addLocation } from "../../config/firestore";
 // Main function that renders the HomeScreen component
 export default function HomeScreen() {
   // State variables to track various pieces of data
@@ -158,6 +158,31 @@ export default function HomeScreen() {
   // Function to convert degrees to radians (used in distance calculation)
   function toRad(Value) {
     return (Value * Math.PI) / 180; // Convert degrees to radians
+  }
+
+  function addLoc() {
+    // pickuplatitude & logitude , dropofflatitude & dropofflongitude,fare,status.vehicle,distance
+    addLocation({
+      Pickuplatitude: pickupLocation.geocodes.main.latitude,
+      Pickuplongitude: pickupLocation.geocodes.main.longitude,
+      Dropofflatitude: dropOffLocation.geocodes.main.latitude,
+      dropofflongitude: dropOffLocation.geocodes.main.longitude,
+      pickupLocationName: pickupLocation.name,
+      dropoffLocationName : dropOffLocation.name,
+      fare: fare,
+      vehicle: selectedVehicle,
+      distance: calcCrow(
+        pickupLocation.geocodes.main.latitude,
+        pickupLocation.geocodes.main.longitude,
+        dropOffLocation.geocodes.main.latitude,
+        dropOffLocation.geocodes.main.longitude
+      ),
+      status : "Pending"
+
+    });
+    
+    // console.log(pickupLocation);
+    // console.log(dropOffLocation);
   }
 
   return (
@@ -352,12 +377,12 @@ export default function HomeScreen() {
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
               Pickup Location:{" "}
-              {pickupLocation.name.split(" ").slice(0, 2).join(" ")} // Display
-              the first two words of the pickup location name
+              {pickupLocation.name.split(" ").slice(0, 2).join(" ")} 
+              {/*Displaythe first two words of the pickup location name */}
             </Text>
             <TouchableOpacity onPress={removePickup} style={style.removeButton}>
-              <Text style={style.removeButtonText}>Remove</Text> // Button to
-              remove the pickup location
+              <Text style={style.removeButtonText}>Remove</Text> 
+               {/* Button toremove the pickup location */}
             </TouchableOpacity>
           </View>
         )}
@@ -383,8 +408,8 @@ export default function HomeScreen() {
                 }}
               >
                 <Text style={style.searchResultText}>
-                  {item.name} | {item.location.formatted_address} // Display
-                  name and address of the search result
+                  {item.name} | {item.location.formatted_address}
+                  {/* // Display name and address of the search result */}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -412,7 +437,7 @@ export default function HomeScreen() {
         {/* Display the fare */}
         <Text style={style.fareText}>Your Fare is PKR:{fare}</Text>
         {/* Button to find a ride */}
-        <TouchableOpacity style={style.findingRideButton}>
+        <TouchableOpacity style={style.findingRideButton} onPress={addLoc}>
           <Text style={style.findingRideText}>Find Ride</Text>
           {/* // Text on the button */}
         </TouchableOpacity>
