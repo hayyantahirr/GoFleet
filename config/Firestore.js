@@ -19,4 +19,4 @@ async function addLocation(rideData) {
   return addDoc(collection(db, "RidesInfo"), rideData);
 }
 
-export { addLocation ,db,app};
+export { addLocation, db, app };

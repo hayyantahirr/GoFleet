@@ -1,6 +1,6 @@
-import React from 'react';
-import { Stack } from 'expo-router';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React from "react";
+import { Stack } from "expo-router";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -14,7 +14,7 @@ export default function TabLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: "Home",
         }}
       />
       {/* Add other screens here if needed */}

@@ -1,6 +1,6 @@
 // Import necessary components from React Native and external libraries
 import { View, TextInput, Text, TouchableOpacity, Image } from "react-native"; // Core components for UI
-import MapView, { Marker } from "react-native-maps"; // Map component and Marker for pinning locations
+import MapView, { Marker, Polyline } from "react-native-maps"; // Map component and Marker for pinning locations
 import * as Location from "expo-location"; // Location services from Expo
 import { useEffect, useState } from "react"; // React hooks for managing state and side effects
 import style from "../../styles/home-css"; // Importing custom styles for this screen
@@ -244,32 +244,51 @@ export default function HomeScreen() {
             longitude: pickupLocation
               ? pickupLocation.geocodes.main.longitude // Use pickup location longitude if available
               : location.coords.longitude, // Otherwise, use the current location longitude
-            latitudeDelta: pickupLocation ? 0.1 : 0.0032, // Adjust zoom level based on pickup location
-            longitudeDelta: pickupLocation ? 0.1 : 0.0001, // Adjust zoom level based on pickup location
+            latitudeDelta: pickupLocation ? 0.01 : 0.0032, // Adjust zoom level based on pickup location
+            longitudeDelta: pickupLocation ? 0.05 : 0.0001, // Adjust zoom level based on pickup location
           }}
         >
-          {/* Display the logo on the map */}
-          <Image
-            source={require("../../assets/GoFleet Images/Go_fleet-removebg-preview.png")} // Path to the logo image
-            style={style.Logo} // Apply styling to the logo
-          />
-          {/* Marker for the user's current location */}
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude, // Latitude of the current location
-              longitude: location.coords.longitude, // Longitude of the current location
-            }}
-          />
+          {/* Display the user's current location marker */}
 
-          {/* Render the drop-off location marker if dropOffLocation is available */}
+          {/* Render the pickup location marker if available */}
+          {pickupLocation && (
+            <Marker
+              coordinate={{
+                latitude: pickupLocation.geocodes.main.latitude, // Latitude of the pickup location
+                longitude: pickupLocation.geocodes.main.longitude, // Longitude of the pickup location
+              }}
+              title="Pickup Location" // Title for the pickup location marker
+              pinColor="green"
+            />
+          )}
+
+          {/* Render the drop-off location marker if available */}
           {dropOffLocation && (
             <Marker
               coordinate={{
                 latitude: dropOffLocation.geocodes.main.latitude, // Latitude of the drop-off location
                 longitude: dropOffLocation.geocodes.main.longitude, // Longitude of the drop-off location
               }}
-              title="Drop-Off Location" // Title of the marker
-              description={dropOffLocation.location.formatted_address} // Description of the marker
+              title="Drop-Off Location" // Title for the drop-off location marker
+              description={dropOffLocation.location.formatted_address} // Description of the drop-off location
+            />
+          )}
+
+          {/* Add a Polyline between the pickup and drop-off locations if both are available */}
+          {pickupLocation && dropOffLocation && (
+            <Polyline
+              coordinates={[
+                {
+                  latitude: pickupLocation.geocodes.main.latitude,
+                  longitude: pickupLocation.geocodes.main.longitude,
+                },
+                {
+                  latitude: dropOffLocation.geocodes.main.latitude,
+                  longitude: dropOffLocation.geocodes.main.longitude,
+                },
+              ]}
+              strokeColor="#23B5D3" // Blue color for the polyline
+              strokeWidth={4} // Width of the polyline
             />
           )}
         </MapView>
@@ -278,6 +297,10 @@ export default function HomeScreen() {
       {/* Container for input fields and vehicle selection buttons */}
       <View style={style.inputContainer}>
         {/* Container for vehicle selection buttons */}
+        <Image
+          source={require("../../assets/GoFleet Images/Go_fleet-removebg-preview.png")} // Path to the logo image
+          style={style.Logo} // Apply styling to the logo
+        />
         <View style={style.vehicleButtonContainer}>
           {/* Button for Fleet Premium vehicle */}
           <TouchableOpacity
@@ -481,11 +504,7 @@ export default function HomeScreen() {
         {/* Display the fare */}
         <Text style={style.fareText}>Your Fare is PKR:{fare}</Text>
         {/* Button to find a ride */}
-        <TouchableOpacity
-          style={getButtonStyle()}
-          onPress={addLoc}
-          disabled={handleFindRideClick}
-        >
+        <TouchableOpacity style={getButtonStyle()} onPress={addLoc}>
           <Text style={style.findingRideText}>{getButtonText()}</Text>
           {/* // Text on the button */}
         </TouchableOpacity>
