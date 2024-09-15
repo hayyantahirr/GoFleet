@@ -4,7 +4,8 @@ import MapView, { Marker } from "react-native-maps"; // Map component and Marker
 import * as Location from "expo-location"; // Location services from Expo
 import { useEffect, useState } from "react"; // React hooks for managing state and side effects
 import style from "../../styles/home-css"; // Importing custom styles for this screen
-import { addLocation } from "../../config/firestore";
+import { addLocation, db } from "../../config/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 // Main function that renders the HomeScreen component
 export default function HomeScreen() {
   // State variables to track various pieces of data
@@ -18,7 +19,7 @@ export default function HomeScreen() {
   const [dropOffInput, setDropOffInput] = useState(""); // State to store the current input in the drop-off location search
   const [fare, setFare] = useState(0); // State to store the calculated fare based on the distance
   const [selectedVehicle, setSelectedVehicle] = useState(null); // State to store the selected vehicle type
-
+  const [acceptedRides, setAcceptedRides] = useState([]); // State to store the list of accepted rides
   // Object that contains base fare rates for different vehicle types
   const rates = {
     FleetPremium: 120, // Base fare for Fleet Premium
@@ -29,6 +30,10 @@ export default function HomeScreen() {
 
   // useEffect hook to request location permissions and watch the user's position
   useEffect(() => {
+    locationPermit();
+    realTimeRide();
+  }, []); // Empty array ensures this runs only once when the component mounts
+  function locationPermit() {
     (async () => {
       // Request permission to access location in the foreground
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -47,8 +52,7 @@ export default function HomeScreen() {
         setLocation(location); // Set the current location to state
       });
     })();
-  }, []); // Empty array ensures this runs only once when the component mounts
-
+  }
   // Function to search for pickup locations using Foursquare API
   function findingPickupLocation(picklocation) {
     setPickupInput(picklocation); // Update the input state with the current pickup search query
@@ -168,7 +172,7 @@ export default function HomeScreen() {
       Dropofflatitude: dropOffLocation.geocodes.main.latitude,
       dropofflongitude: dropOffLocation.geocodes.main.longitude,
       pickupLocationName: pickupLocation.name,
-      dropoffLocationName : dropOffLocation.name,
+      dropoffLocationName: dropOffLocation.name,
       fare: fare,
       vehicle: selectedVehicle,
       distance: calcCrow(
@@ -177,14 +181,54 @@ export default function HomeScreen() {
         dropOffLocation.geocodes.main.latitude,
         dropOffLocation.geocodes.main.longitude
       ),
-      status : "Pending"
-
+      status: "Pending",
     });
-    
+    if (acceptedRides[0] === "Accepted") {
+      return [style.button, style.acceptedButton]; // Green color for accepted rides
+    } else if (acceptedRides[0] === "Pending") {
+      return [style.button, style.pendingButton]; // Gray color for pending rides
+    } else if (acceptedRides[0] === "Rejected") {
+      return [style.button, style.rejectedButton]; // Red color for rejected rides
+    }
+    return style.findingRideButton; // Default button style if no status is available
     // console.log(pickupLocation);
     // console.log(dropOffLocation);
   }
+  function realTimeRide() {
+    const q = query(collection(db, "RidesInfo"));
+    onSnapshot(q, (querySnapshot) => {
+      const acceptRides = [];
+      querySnapshot.forEach((doc) => {
+        acceptRides.push(doc.data().status);
+      });
+      console.log("status of ride ", acceptRides);
+      setAcceptedRides([...acceptRides]);
+    });
+  }
+  const getButtonStyle = () => {
+    if (acceptedRides[0] === "accepted") {
+      return [style.button, style.acceptedButton]; // Green color for accepted rides
+    } else if (acceptedRides[0] === "Pending") {
+      return [style.button, style.pendingButton]; // Gray color for pending rides
+    } else if (acceptedRides[0] === "rejected") {
+      return [style.button, style.rejectedButton]; // Red color for rejected rides
+    }
+    return style.findingRideButton; // Default button style if no status is available
+  };
 
+  const getButtonText = () => {
+    if (acceptedRides[0] === "accepted") {
+      return "Ride Accepted";
+    } else if (acceptedRides[0] === "Pending") {
+      return "Processing...";
+    } else if (acceptedRides[0] === "rejected") {
+      return "Cancelled";
+    }
+    return "Find Ride"; // Default text if no status is available
+  };
+  function handleFindRideClick() {
+    setButtonDisabled(true); // Disable the button once it's clicked
+  }
   return (
     // Main container view for the HomeScreen component
     <View style={style.container}>
@@ -377,12 +421,12 @@ export default function HomeScreen() {
           <View style={style.selectedLocationContainer}>
             <Text style={style.selectedLocationText}>
               Pickup Location:{" "}
-              {pickupLocation.name.split(" ").slice(0, 2).join(" ")} 
+              {pickupLocation.name.split(" ").slice(0, 2).join(" ")}
               {/*Displaythe first two words of the pickup location name */}
             </Text>
             <TouchableOpacity onPress={removePickup} style={style.removeButton}>
-              <Text style={style.removeButtonText}>Remove</Text> 
-               {/* Button toremove the pickup location */}
+              <Text style={style.removeButtonText}>Remove</Text>
+              {/* Button toremove the pickup location */}
             </TouchableOpacity>
           </View>
         )}
@@ -437,8 +481,12 @@ export default function HomeScreen() {
         {/* Display the fare */}
         <Text style={style.fareText}>Your Fare is PKR:{fare}</Text>
         {/* Button to find a ride */}
-        <TouchableOpacity style={style.findingRideButton} onPress={addLoc}>
-          <Text style={style.findingRideText}>Find Ride</Text>
+        <TouchableOpacity
+          style={getButtonStyle()}
+          onPress={addLoc}
+          disabled={handleFindRideClick}
+        >
+          <Text style={style.findingRideText}>{getButtonText()}</Text>
           {/* // Text on the button */}
         </TouchableOpacity>
       </View>

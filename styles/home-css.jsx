@@ -98,7 +98,7 @@ const style = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     width: "100%",
-    backgroundColor: "red",
+    backgroundColor: "#726E60",
 
     // borderColor: "black",
     // borderWidth: 1,
@@ -124,6 +124,32 @@ const style = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  acceptedButton: {
+    backgroundColor: "#32E875", // Green for accepted
+    marginTop: 10,
+    marginBottom: 10,
+    width: "100%",
+    borderRadius: 15,
+  },
+  pendingButton: {
+    backgroundColor: "#A0B9C6", // Gray for pending
+    marginTop: 10,
+    marginBottom: 10,
+    width: "100%",
+    borderRadius: 15,
+  },
+  rejectedButton: {
+    backgroundColor: "#C42021", // Red for rejected
+    marginTop: 10,
+    marginBottom: 10,
+    width: "100%",
+    borderRadius: 15,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 28.5,
   },
 });
 
