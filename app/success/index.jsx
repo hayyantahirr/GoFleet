@@ -83,10 +83,12 @@ export default function HomeScreen() {
       <View style={style.inputContainer}>
         {/* Display the fare */}
         <View style={style.selectedLocationContainer}>
-          source={require("../../assets/GoFleet Images/greenLocation.png")}{" "}
-          style={style.LocationMarkImage}
+          <Image
+            source={require("../../assets/GoFleet Images/greenLocation.png")}
+            style={style.LocationMarkImage}
+          />
           <Text style={style.selectedLocationText}>
-            {params.pickupLocationName.split(" ").slice(0, 2).join(" ")}
+            {params.pickupLocationName.split(" ").slice(0, 6).join(" ")}
             {/*Displaythe first two words of the pickup location name */}
           </Text>
         </View>
@@ -96,7 +98,7 @@ export default function HomeScreen() {
             style={style.LocationMarkImage}
           />
           <Text style={style.selectedLocationText}>
-            {params.dropoffLocationName.split(" ").slice(0, 2).join(" ")}
+            {params.dropoffLocationName.split(" ").slice(0, 6).join(" ")}
           </Text>
         </View>
         <Text style={style.fareText}>Amount to Pay : {params.fare}</Text>

@@ -23,6 +23,7 @@ export default function HomeScreen() {
   const [fare, setFare] = useState(0); // State to store the calculated fare based on the distance
   const [selectedVehicle, setSelectedVehicle] = useState(null); // State to store the selected vehicle type
   const [acceptedRides, setAcceptedRides] = useState([]); // State to store the list of accepted rides
+  const[distances,setDistances]=useState(null)
   // Object that contains base fare rates for different vehicle types
   const rates = {
     FleetPremium: 120, // Base fare for Fleet Premium
@@ -160,6 +161,7 @@ export default function HomeScreen() {
       Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); // Calculate the angular distance
     var d = R * c; // Distance in kilometers
+    setDistances(d);
     return d; // Return the calculated distance
   }
 
@@ -255,7 +257,7 @@ export default function HomeScreen() {
         console.log("pickup location", pickupLocation);
         console.log("dropoff location", dropOffLocation);
 
-        if (dropOffLocation && pickupLocation && fare && selectedVehicle) {
+        if (dropOffLocation && pickupLocation && fare && selectedVehicle && distances) {
           router.push({
             pathname: "/success",
             params: {

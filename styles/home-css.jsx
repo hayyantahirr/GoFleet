@@ -70,14 +70,15 @@ const style = StyleSheet.create({
   searchResultText: {
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderColor: "black",
+    borderColor: "#A0B9C6",
+    borderRadius: 15,
     borderWidth: 1,
     fontSize: 16,
   },
   selectedLocationContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    
     backgroundColor: "white",
     height: 40,
     paddingHorizontal: 10,
@@ -86,6 +87,7 @@ const style = StyleSheet.create({
   },
   selectedLocationText: {
     fontSize: 16,
+    textAlign: "left",
   },
   removeButton: {
     marginLeft: 10,

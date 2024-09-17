@@ -4,11 +4,11 @@
     "slug": "GoFleet",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/GoFleet Images/Go_fleet-removebg-preview.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/GoFleet Images/Go_fleet-removebg-preview.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/GoFleet Images/Go_fleet-removebg-preview.png"
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
