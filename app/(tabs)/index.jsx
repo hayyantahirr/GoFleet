@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"; // React hooks for managing state a
 import style from "../../styles/home-css"; // Importing custom styles for this screen
 import { addLocation, db } from "../../config/firestore";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { router } from "expo-router";
 // Main function that renders the HomeScreen component
 export default function HomeScreen() {
   // State variables to track various pieces of data
@@ -193,6 +194,7 @@ export default function HomeScreen() {
     return style.findingRideButton; // Default button style if no status is available
     // console.log(pickupLocation);
     // console.log(dropOffLocation);
+    // router.push("")
   }
   function realTimeRide() {
     const q = query(collection(db, "RidesInfo"));
