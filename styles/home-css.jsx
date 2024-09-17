@@ -151,6 +151,12 @@ const style = StyleSheet.create({
     color: "white",
     fontSize: 28.5,
   },
+  LocationMarkImage: {
+    width: 20,
+    height: 20,
+    // marginLeft: 10,
+    marginRight: 10,
+  },
 });
 
 export default style;

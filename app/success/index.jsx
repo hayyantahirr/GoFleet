@@ -1,5 +1,5 @@
 // Import necessary components from React Native and external libraries
-import { View, Text } from "react-native"; // Core components for UI
+import { View, Text, Image } from "react-native"; // Core components for UI
 
 import style from "../../styles/home-css"; // Importing custom styles for this screen
 import MapView, { Marker, Polyline } from "react-native-maps";
@@ -83,19 +83,25 @@ export default function HomeScreen() {
       <View style={style.inputContainer}>
         {/* Display the fare */}
         <View style={style.selectedLocationContainer}>
+          source={require("../../assets/GoFleet Images/greenLocation.png")}{" "}
+          style={style.LocationMarkImage}
           <Text style={style.selectedLocationText}>
             {params.pickupLocationName.split(" ").slice(0, 2).join(" ")}
             {/*Displaythe first two words of the pickup location name */}
           </Text>
         </View>
         <View style={style.selectedLocationContainer}>
+          <Image
+            source={require("../../assets/GoFleet Images/redLocation.png")}
+            style={style.LocationMarkImage}
+          />
           <Text style={style.selectedLocationText}>
-            {params.dropoffLocationName}
+            {params.dropoffLocationName.split(" ").slice(0, 2).join(" ")}
           </Text>
         </View>
         <Text style={style.fareText}>Amount to Pay : {params.fare}</Text>
         <Text style={style.fareText}>
-          Distance To Travel : {Math.round(params.distance)}
+          Distance To Travel : {Math.round(params.distance)} KM
         </Text>
         <Text style={style.fareText}>Vehicle Selected :{params.vehicle}</Text>
         {/* Button to find a ride */}
