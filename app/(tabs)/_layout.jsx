@@ -15,6 +15,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
+          headerShown: false,
         }}
       />
       {/* Add other screens here if needed */}

@@ -7,9 +7,11 @@ import style from "../../styles/home-css"; // Importing custom styles for this s
 import { addLocation, db } from "../../config/firestore";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { router } from "expo-router";
+
 // Main function that renders the HomeScreen component
 export default function HomeScreen() {
   // State variables to track various pieces of data
+
   const [location, setLocation] = useState(null); // State to store user's current location
   const [errorMsg, setErrorMsg] = useState(null); // State to store any error message related to location access
   const [searchResult, setSearchResult] = useState(null); // State to store results from the pickup location search
@@ -32,8 +34,9 @@ export default function HomeScreen() {
   // useEffect hook to request location permissions and watch the user's position
   useEffect(() => {
     locationPermit();
+
     realTimeRide();
-  }, []); // Empty array ensures this runs only once when the component mounts
+  }, [pickupLocation, dropOffLocation, fare, selectedVehicle]); // Empty array ensures this runs only once when the component mounts
   function locationPermit() {
     (async () => {
       // Request permission to access location in the foreground
@@ -165,8 +168,58 @@ export default function HomeScreen() {
     return (Value * Math.PI) / 180; // Convert degrees to radians
   }
 
+  // function addLoc() {
+  //   // pickuplatitude & logitude , dropofflatitude & dropofflongitude,fare,status.vehicle,distance
+  //   addLocation({
+  //     Pickuplatitude: pickupLocation.geocodes.main.latitude,
+  //     Pickuplongitude: pickupLocation.geocodes.main.longitude,
+  //     Dropofflatitude: dropOffLocation.geocodes.main.latitude,
+  //     dropofflongitude: dropOffLocation.geocodes.main.longitude,
+  //     pickupLocationName: pickupLocation.name,
+  //     dropoffLocationName: dropOffLocation.name,
+  //     fare: fare,
+  //     vehicle: selectedVehicle,
+  //     distance: calcCrow(
+  //       pickupLocation.geocodes.main.latitude,
+  //       pickupLocation.geocodes.main.longitude,
+  //       dropOffLocation.geocodes.main.latitude,
+  //       dropOffLocation.geocodes.main.longitude
+  //     ),
+  //     status: "Pending",
+  //   });
+  //   router.push({
+  //     pathname: "/success",
+  //     params: {
+  //       pickupLocationLatitude: pickupLocation.geocodes.main.latitude,
+  //       pickupLocationLongitude: pickupLocation.geocodes.main.longitude,
+  //       dropoffLocationLatitude: dropOffLocation.geocodes.main.latitude,
+  //       dropoffLocationLongitude: dropOffLocation.geocodes.main.longitude,
+  //       pickupLocationName: pickupLocation.name,
+  //       dropoffLocationName: dropOffLocation.name,
+  //       fare: fare,
+  //       vehicle: selectedVehicle,
+  //       distance: calcCrow(
+  //         pickupLocation.geocodes.main.latitude,
+  //         pickupLocation.geocodes.main.longitude,
+  //         dropOffLocation.geocodes.main.latitude,
+  //         dropOffLocation.geocodes.main.longitude
+  //       ),
+  //     },
+  //   });
+
+  //   if (acceptedRides[0] === "Accepted") {
+  //     return [style.button, style.acceptedButton]; // Green color for accepted rides
+  //   } else if (acceptedRides[0] === "Pending") {
+  //     return [style.button, style.pendingButton]; // Gray color for pending rides
+  //   } else if (acceptedRides[0] === "Rejected") {
+  //     return [style.button, style.rejectedButton]; // Red color for rejected rides
+  //   }
+  //   return style.findingRideButton; // Default button style if no status is available
+  //   // console.log(pickupLocation);
+  //   // console.log(dropOffLocation);
+  // }
   function addLoc() {
-    // pickuplatitude & logitude , dropofflatitude & dropofflongitude,fare,status.vehicle,distance
+    // Add location details to Firestore with 'Pending' status
     addLocation({
       Pickuplatitude: pickupLocation.geocodes.main.latitude,
       Pickuplongitude: pickupLocation.geocodes.main.longitude,
@@ -182,8 +235,56 @@ export default function HomeScreen() {
         dropOffLocation.geocodes.main.latitude,
         dropOffLocation.geocodes.main.longitude
       ),
-      status: "Pending",
+      status: "Pending", // Set initial status as 'Pending'
     });
+
+    // Check the current status
+
+    // Set button styles based on the ride status
+  }
+
+  function realTimeRide() {
+    const q = query(collection(db, "RidesInfo"));
+    onSnapshot(q, (querySnapshot) => {
+      const acceptRides = [];
+      querySnapshot.forEach((doc) => {
+        acceptRides.push(doc.data().status);
+      });
+      setAcceptedRides([...acceptRides]);
+      if (acceptRides[0] === "Accepted") {
+        console.log("pickup location", pickupLocation);
+        console.log("dropoff location", dropOffLocation);
+
+        if (dropOffLocation && pickupLocation && fare && selectedVehicle) {
+          router.push({
+            pathname: "/success",
+            params: {
+              pickupLocationLatitude: pickupLocation.geocodes.main.latitude,
+              pickupLocationLongitude: pickupLocation.geocodes.main.longitude,
+              dropoffLocationLatitude: dropOffLocation.geocodes.main.latitude,
+              dropoffLocationLongitude: dropOffLocation.geocodes.main.longitude,
+              pickupLocationName: pickupLocation.name,
+              dropoffLocationName: dropOffLocation.name,
+              fare: fare,
+              vehicle: selectedVehicle,
+              distance: calcCrow(
+                pickupLocation.geocodes.main.latitude,
+                pickupLocation.geocodes.main.longitude,
+                dropOffLocation.geocodes.main.latitude,
+                dropOffLocation.geocodes.main.longitude
+              ),
+            },
+          });
+        }
+        //
+
+        // Green color for accepted rides
+      }
+
+      console.log("status of ride ", acceptRides);
+    });
+  }
+  const getButtonStyle = () => {
     if (acceptedRides[0] === "Accepted") {
       return [style.button, style.acceptedButton]; // Green color for accepted rides
     } else if (acceptedRides[0] === "Pending") {
@@ -192,38 +293,14 @@ export default function HomeScreen() {
       return [style.button, style.rejectedButton]; // Red color for rejected rides
     }
     return style.findingRideButton; // Default button style if no status is available
-    // console.log(pickupLocation);
-    // console.log(dropOffLocation);
-    // router.push("")
-  }
-  function realTimeRide() {
-    const q = query(collection(db, "RidesInfo"));
-    onSnapshot(q, (querySnapshot) => {
-      const acceptRides = [];
-      querySnapshot.forEach((doc) => {
-        acceptRides.push(doc.data().status);
-      });
-      console.log("status of ride ", acceptRides);
-      setAcceptedRides([...acceptRides]);
-    });
-  }
-  const getButtonStyle = () => {
-    if (acceptedRides[0] === "accepted") {
-      return [style.button, style.acceptedButton]; // Green color for accepted rides
-    } else if (acceptedRides[0] === "Pending") {
-      return [style.button, style.pendingButton]; // Gray color for pending rides
-    } else if (acceptedRides[0] === "rejected") {
-      return [style.button, style.rejectedButton]; // Red color for rejected rides
-    }
-    return style.findingRideButton; // Default button style if no status is available
   };
 
   const getButtonText = () => {
-    if (acceptedRides[0] === "accepted") {
+    if (acceptedRides[0] === "Accepted") {
       return "Ride Accepted";
     } else if (acceptedRides[0] === "Pending") {
       return "Processing...";
-    } else if (acceptedRides[0] === "rejected") {
+    } else if (acceptedRides[0] === "Rejected") {
       return "Cancelled";
     }
     return "Find Ride"; // Default text if no status is available

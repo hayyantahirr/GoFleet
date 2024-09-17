@@ -1,90 +1,103 @@
 // Import necessary components from React Native and external libraries
-import { View, TextInput, Text, TouchableOpacity, Image } from "react-native"; // Core components for UI
-import MapView, { Marker, Polyline } from "react-native-maps"; // Map component and Marker for pinning locations
-import * as Location from "expo-location"; // Location services from Expo
-import { useEffect, useState } from "react"; // React hooks for managing state and side effects
+import { View, Text } from "react-native"; // Core components for UI
+
 import style from "../../styles/home-css"; // Importing custom styles for this screen
-import { addLocation, db } from "../../config/firestore";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import * as Location from "expo-location";
 // Main function that renders the HomeScreen component
 export default function HomeScreen() {
-  // State variables to track various pieces of data
+  const params = useLocalSearchParams();
   const [location, setLocation] = useState(null); // State to store user's current location
+  // State variables to track various pieces of data
+  useEffect(() => {
+    (async () => {
+      // Request permission to access location in the foreground
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        // If permission is not granted, set an error message and stop the function
 
-  const [pickupLocation, setPickupLocation] = useState(null); // State to store the selected pickup location
-  const [dropOffLocation, setDropOffLocation] = useState(null); // State to store the selected drop-off location
-
+        return;
+      }
+      // Options to set the accuracy and distance interval for location tracking
+      const options = {
+        accuracy: 4, // Accuracy level of location
+        distanceInterval: 1, // Minimum distance (in meters) between location updates
+      };
+      // Watch the user's location and update the location state when the position changes
+      Location.watchPositionAsync(options, (location) => {
+        setLocation(location); // Set the current location to state
+      });
+    })();
+    console.log("location added", location);
+  }, []);
   // Object that contains base fare rates for different vehicle types
 
   return (
     // Main container view for the HomeScreen component
     <View style={style.container}>
-      {/* Render the MapView only if the location state is available */}
       {location && (
         <MapView
           style={style.map} // Apply styling to the MapView
           region={{
             // Set the region of the map based on the pickup location or current location
-            latitude: pickupLocation
-              ? pickupLocation.geocodes.main.latitude // Use pickup location latitude if available
-              : location.coords.latitude, // Otherwise, use the current location latitude
-            longitude: pickupLocation
-              ? pickupLocation.geocodes.main.longitude // Use pickup location longitude if available
-              : location.coords.longitude, // Otherwise, use the current location longitude
-            latitudeDelta: pickupLocation ? 0.01 : 0.0032, // Adjust zoom level based on pickup location
-            longitudeDelta: pickupLocation ? 0.05 : 0.0001, // Adjust zoom level based on pickup location
+            latitude: location.coords.latitude, // Otherwise, use the current location latitude
+            longitude: location.coords.longitude, // Otherwise, use the current location longitude
+            latitudeDelta: 0.1, // Adjust zoom level based on pickup location
+            longitudeDelta: 0.05, // Adjust zoom level based on pickup location
           }}
         >
-          {/* Display the user's current location marker */}
-
-          {/* Render the pickup location marker if available */}
-          {pickupLocation && (
-            <Marker
-              coordinate={{
-                latitude: pickupLocation.geocodes.main.latitude, // Latitude of the pickup location
-                longitude: pickupLocation.geocodes.main.longitude, // Longitude of the pickup location
-              }}
-              title="Pickup Location" // Title for the pickup location marker
-              pinColor="green"
-            />
-          )}
-
-          {/* Render the drop-off location marker if available */}
-          {dropOffLocation && (
-            <Marker
-              coordinate={{
-                latitude: dropOffLocation.geocodes.main.latitude, // Latitude of the drop-off location
-                longitude: dropOffLocation.geocodes.main.longitude, // Longitude of the drop-off location
-              }}
-              title="Drop-Off Location" // Title for the drop-off location marker
-              description={dropOffLocation.location.formatted_address} // Description of the drop-off location
-            />
-          )}
-
-          {/* Add a Polyline between the pickup and drop-off locations if both are available */}
-          {pickupLocation && dropOffLocation && (
-            <Polyline
-              coordinates={[
-                {
-                  latitude: pickupLocation.geocodes.main.latitude,
-                  longitude: pickupLocation.geocodes.main.longitude,
-                },
-                {
-                  latitude: dropOffLocation.geocodes.main.latitude,
-                  longitude: dropOffLocation.geocodes.main.longitude,
-                },
-              ]}
-              strokeColor="#23B5D3" // Blue color for the polyline
-              strokeWidth={4} // Width of the polyline
-            />
-          )}
+          <Marker
+            coordinate={{
+              latitude: params.pickupLocationLatitude,
+              longitude: params.pickupLocationLongitude,
+            }}
+            title={params.pickupLocationName}
+            pinColor="green"
+          />
+          <Marker
+            coordinate={{
+              latitude: params.dropoffLocationLatitude,
+              longitude: params.dropoffLocationLongitude,
+            }}
+            title={params.dropoffLocationName}
+            pinColor="red"
+          />
+          <Polyline
+            strokeColor="#23B5D3" // Blue color for the polyline
+            strokeWidth={4} // Width of the polyline
+            coordinates={[
+              {
+                latitude: params.pickupLocationLatitude,
+                longitude: params.pickupLocationLongitude,
+              },
+              {
+                latitude: params.dropoffLocationLatitude,
+                longitude: params.dropoffLocationLongitude,
+              },
+            ]}
+          />
         </MapView>
       )}
-
-      {/* Container for input fields and vehicle selection buttons */}
       <View style={style.inputContainer}>
         {/* Display the fare */}
-        <Text style={style.fareText}>Your Fare is PKR:</Text>
+        <View style={style.selectedLocationContainer}>
+          <Text style={style.selectedLocationText}>
+            {params.pickupLocationName.split(" ").slice(0, 2).join(" ")}
+            {/*Displaythe first two words of the pickup location name */}
+          </Text>
+        </View>
+        <View style={style.selectedLocationContainer}>
+          <Text style={style.selectedLocationText}>
+            {params.dropoffLocationName}
+          </Text>
+        </View>
+        <Text style={style.fareText}>Amount to Pay : {params.fare}</Text>
+        <Text style={style.fareText}>
+          Distance To Travel : {Math.round(params.distance)}
+        </Text>
+        <Text style={style.fareText}>Vehicle Selected :{params.vehicle}</Text>
         {/* Button to find a ride */}
       </View>
     </View>
